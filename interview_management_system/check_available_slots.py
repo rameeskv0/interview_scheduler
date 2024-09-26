@@ -23,9 +23,15 @@ def check_available_slots_page():
         
         if isinstance(available_slots, list) and available_slots:
             st.success("Available slots found!")
+            
+            # Sort available slots by start time
+            available_slots = sorted(available_slots, key=lambda slot: datetime.strptime(slot[0], "%Y-%m-%d %H:%M"))
+            
+            # Display sorted slots
             for slot in available_slots:
                 start = datetime.strptime(slot[0], "%Y-%m-%d %H:%M")
                 end = datetime.strptime(slot[1], "%Y-%m-%d %H:%M")
+                # Display the times in 12-hour format with AM/PM
                 st.write(f"Date: {start.strftime('%B %d, %Y')} - Time: {start.strftime('%I:%M %p')} to {end.strftime('%I:%M %p')}")
         elif isinstance(available_slots, list) and not available_slots:
             st.warning("No available slots found for the selected interviewer and candidate.")

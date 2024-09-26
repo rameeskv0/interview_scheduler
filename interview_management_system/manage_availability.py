@@ -1,9 +1,19 @@
 import streamlit as st
 import requests
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 
 BASE_URL = "http://localhost:8000/api"
+
+# Function to generate a list of time slots with absolute times like 9:00 AM, 10:00 AM, etc.
+def generate_time_slots():
+    start = datetime.now().replace(hour=9, minute=0, second=0, microsecond=0)  # 9:00 AM
+    end = datetime.now().replace(hour=17, minute=0, second=0, microsecond=0)   # 5:00 PM
+    time_slots = []
+    while start <= end:
+        time_slots.append(start.time())  # Append time object
+        start += timedelta(hours=1)      # Increment by 1 hour
+    return time_slots
 
 def manage_availability_page():
     st.subheader("Manage Availability")
@@ -23,14 +33,20 @@ def manage_availability_page():
         add_availability_form("CANDIDATE", candidates)
 
 def add_availability_form(user_type, users):
+    time_slots = generate_time_slots()  # Generate time slots for dropdown
+
     with st.form(f"add_{user_type.lower()}_availability"):
         user = st.selectbox(f"Select {user_type}", options=users, format_func=lambda x: f"{x['name']} (ID: {x['id']})")
         date = st.date_input("Select Date", value=datetime.now().date())
-        start_time = st.time_input("Start Time", value=datetime.now().time().replace(minute=0, second=0, microsecond=0))
-        end_time = st.time_input("End Time", value=(datetime.now() + timedelta(hours=1)).time().replace(minute=0, second=0, microsecond=0))
+        
+        # Use selectbox for pre-defined time slots instead of time_input
+        start_time = st.selectbox("Start Time", options=time_slots, format_func=lambda t: t.strftime('%I:%M %p'))
+        end_time = st.selectbox("End Time", options=time_slots, index=1, format_func=lambda t: t.strftime('%I:%M %p'))
+        
         submit_button = st.form_submit_button(f"Add {user_type} Availability")
 
     if submit_button:
+        # Convert time to ISO format
         start_datetime = datetime.combine(date, start_time).isoformat() + "Z"
         end_datetime = datetime.combine(date, end_time).isoformat() + "Z"
         with st.spinner("Adding availability..."):
@@ -72,3 +88,4 @@ def add_availability(user_id, user_type, start_time, end_time):
         return response.status_code, response.json()  # Return status code and JSON response
     except requests.exceptions.RequestException as e:
         return 500, {"message": f"Error: {str(e)}"}  # Return 500 for request exceptions
+#manage avaialbilty
