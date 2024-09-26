@@ -1,4 +1,4 @@
 django
 streamlit
-django_restframework
+rest_framework
 requests
