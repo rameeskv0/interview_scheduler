@@ -29,7 +29,7 @@ def input_candidate_availability(request, candidate_id):
             existing_availability.start_time = serializer.validated_data['start_time']
             existing_availability.end_time = serializer.validated_data['end_time']
             existing_availability.save()
-            return Response({"message": "Availability updated successfully"}, status=status.HTTP_200_OK)
+            return Response({"message": "Availability updated successfully"}, status=status.HTTP_201_CREATED)
         
         # Create new availability if none exists
         Availability.objects.create(
@@ -57,7 +57,7 @@ def input_interviewer_availability(request, interviewer_id):
             existing_availability.start_time = serializer.validated_data['start_time']
             existing_availability.end_time = serializer.validated_data['end_time']
             existing_availability.save()
-            return Response({"message": "Availability updated successfully"}, status=status.HTTP_200_OK)
+            return Response({"message": "Availability updated successfully"}, status=status.HTTP_201_CREATED)
         
         # Create new availability if none exists
         Availability.objects.create(

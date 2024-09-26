@@ -23,12 +23,7 @@ This project provides an advanced interview scheduling system that allows HR per
   
 ---
 
-## Project Structure
 
-├── interview_scheduler/ # Main Django project folder │ ├── interview_scheduler/ # Django settings │ ├── api/ # Django app containing models and views │ ├── manage.py # Django management script ├── streamlit_app/ # Streamlit application folder │ ├── app.py # Streamlit app script ├── requirements.txt # Python dependencies ├── README.md # Project instructions
-
-
----
 
 ## Requirements
 
@@ -37,7 +32,7 @@ Ensure you have the following installed:
 - Python 3.8+
 - Django 4.0+
 - Streamlit 1.8+
-- PostgreSQL or SQLite (default)
+- SQLite (default)
 - Git
 
 ---
@@ -72,19 +67,13 @@ Ensure you have the following installed:
    python manage.py migrate
     ```
 
-2. **Create a superuser** (for accessing Django admin):
-    ```bash
-    python manage.py createsuperuser
-    ```
 
-4. **Run the development server**:
+
+
+2. **Run the development server**:
     ```bash
     python manage.py runserver
     ```
-
-5. **Access the Django admin panel**:
-    - Navigate to `http://127.0.0.1:8000/admin/` in your browser.
-    - Log in with the superuser credentials you created.
 
 ---
 
@@ -94,7 +83,7 @@ You can test the API endpoints using tools like [Postman](https://www.postman.co
 
 ### Example `curl` Commands:
 
-- **Create an Interviewer**:
+- **Create an Interviewer or a Candidate**:
     ```bash
     curl -X POST http://localhost:8000/api/users/ \
     -H "Content-Type: application/json" \
@@ -157,7 +146,7 @@ You can test the API endpoints using tools like [Postman](https://www.postman.co
 
 2. **Run the Streamlit app**:
     ```bash
-    streamlit run app.py
+    streamlit run main.py
     ```
 
 3. **Access the app**:
