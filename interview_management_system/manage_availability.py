@@ -34,8 +34,10 @@ def add_availability_form(user_type, users):
         start_datetime = datetime.combine(date, start_time).isoformat() + "Z"
         end_datetime = datetime.combine(date, end_time).isoformat() + "Z"
         with st.spinner("Adding availability..."):
-            response = add_availability(user['id'], user_type, start_datetime, end_datetime)
-        if "message" in response and response["message"] == "Availability added successfully":
+            status_code, response = add_availability(user['id'], user_type, start_datetime, end_datetime)
+
+        # Check for success based on HTTP status code
+        if status_code == 201:
             st.success(f"{user_type} availability added successfully.")
         else:
             st.error(f"Error adding availability: {response.get('message', 'Unknown error')}")
@@ -43,7 +45,7 @@ def add_availability_form(user_type, users):
 def fetch_all_users():
     all_users = []
     url = f"{BASE_URL}/users/"
-    
+
     with st.spinner("Fetching all users..."):
         while url:
             try:
@@ -55,7 +57,7 @@ def fetch_all_users():
             except requests.exceptions.RequestException as e:
                 st.error(f"Error fetching users: {str(e)}")
                 break
-    
+
     return all_users
 
 def add_availability(user_id, user_type, start_time, end_time):
@@ -66,7 +68,7 @@ def add_availability(user_id, user_type, start_time, end_time):
     }
     try:
         response = requests.post(url, headers={"Content-Type": "application/json"}, data=json.dumps(payload))
-        response.raise_for_status()
-        return response.json()
+        response.raise_for_status()  # Raises an error for bad status codes
+        return response.status_code, response.json()  # Return status code and JSON response
     except requests.exceptions.RequestException as e:
-        return {"message": f"Error: {str(e)}"}
+        return 500, {"message": f"Error: {str(e)}"}  # Return 500 for request exceptions

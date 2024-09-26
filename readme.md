@@ -1,4 +1,4 @@
-# Advanced Interview Scheduling System
+# Interview Scheduling System
 
 This project provides an advanced interview scheduling system that allows HR personnel to efficiently schedule interviews by selecting time slots. The system automatically matches candidates and interviewers based on their registered availability.
 
@@ -47,12 +47,15 @@ Ensure you have the following installed:
 1. **Clone the repository**:
     ```bash
     git clone https://github.com/rameeskv0/interview_scheduler.git
+
+    ```
+2. **Navigate to the project folder**:
+    ```bash
     cd interview_scheduler
     ```
 
 
-
-2. **Install dependencies**:
+3. **Install dependencies**:
     ```bash
     pip install -r requirements.txt
     ```
@@ -61,18 +64,15 @@ Ensure you have the following installed:
 
 ## Running the Django API
 
-1. **Navigate to the project folder**:
-    ```bash
-    cd interview_scheduler
-    ```
 
-2. **Apply database migrations**:
+
+1. **Apply database migrations**:
     ```bash
    python manage.py makemigrations 
    python manage.py migrate
     ```
 
-3. **Create a superuser** (for accessing Django admin):
+2. **Create a superuser** (for accessing Django admin):
     ```bash
     python manage.py createsuperuser
     ```
@@ -92,44 +92,65 @@ Ensure you have the following installed:
 
 You can test the API endpoints using tools like [Postman](https://www.postman.com/) or `curl`.
 
-### Available Endpoints
+### Example `curl` Commands:
 
-1. **User List** (GET)
+- **Create an Interviewer**:
     ```bash
-    GET http://127.0.0.1:8000/api/users/
+    curl -X POST http://localhost:8000/api/users/ \
+    -H "Content-Type: application/json" \
+    -d '{
+        "user_type": "INTERVIEWER",
+        "name": "John Doe"
+    }'
     ```
 
-2. **Create Availability** (POST)
+- **Get All Users**:
     ```bash
-    POST http://127.0.0.1:8000/api/availabilities/
-    Content-Type: application/json
-    Body: {
-      "user": 1,
-      "start_time": "2024-09-26T09:00:00Z",
-      "end_time": "2024-09-26T10:00:00Z"
-    }
+    curl -X GET http://localhost:8000/api/users
     ```
 
-3. **Fetch Available Candidates and Interviewers** (GET)
+- **Add Availability for Candidate**:
     ```bash
-    GET http://127.0.0.1:8000/api/match/?start_time=2024-09-26T09:00:00&end_time=2024-09-26T10:00:00
+    curl -X POST http://localhost:8000/api/candidate/<candidate_id>/availability/ \
+    -H "Content-Type: application/json" \
+    -d '{
+        "start_time": "2024-09-30T09:00:00Z",
+        "end_time": "2024-09-30T17:00:00Z"
+    }'
     ```
 
-4. **Create User** (POST)
+- **Add Availability for Interviewer**:
     ```bash
-    POST http://127.0.0.1:8000/api/users/
-    Content-Type: application/json
-    Body: {
-      "user_type": "CANDIDATE",
-      "name": "John Doe"
-    }
+    curl -X POST http://localhost:8000/api/interviewer/<interviewer_id>/availability/ \
+    -H "Content-Type: application/json" \
+    -d '{
+        "start_time": "2024-09-30T09:00:00Z",
+        "end_time": "2024-09-30T17:00:00Z"
+    }'
+    ```
+
+- **Get User Availability**:
+    ```bash
+    curl -X GET http://localhost:8000/api/user/<user_id>/availability/
+    ```
+
+- **Check Available Slots**:
+    ```bash
+    curl -X POST http://localhost:8000/api/get_available_slots/ \
+    -H "Content-Type: application/json" \
+    -d '{
+        "candidate_id": <candidate_id>,
+        "interviewer_id": <interviewer_id>
+    }'
     ```
 
 ---
 
 ## Running the Streamlit App
 
-1. **Navigate to the Streamlit folder**:
+   **(Make sure Django is running)**
+
+1. **Navigate to the Streamlit folder(Use new terminal)**:
     ```bash
     cd interview_management_system
     ```
@@ -144,7 +165,6 @@ You can test the API endpoints using tools like [Postman](https://www.postman.co
     - You should see the Streamlit interface, where you can manually test interview scheduling.
 
 ---
-
 
 ## Using the Streamlit App
 
@@ -165,7 +185,7 @@ The Streamlit app allows HR personnel to add interviewers and candidates, regist
    
 3. **Checking Matching Available Slots**:
    - Go to the **"Check Available Slots"** section.
-   - Select a specific time range you want to check (e.g., 9:00 AM - 10:00 AM, 10:00 AM - 11:00 AM).
+   - Select the IDs of interviewer and candidate you want to check.
    - The system will automatically check both the interviewer and candidate availability, and if overlapping slots are found, they will be displayed in the output.
 
 ---
